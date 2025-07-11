@@ -33,13 +33,13 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkThemeMode,
       home: SignUp(),
 
-      // Use initialRoute or home (but not both)
+
       initialRoute: SignUp.routeName,
 
       routes: {
         SignUp.routeName: (_) => const SignUp(),
-        SignIn.routeName: (_) => const SignIn(), // Example
-        // Add more routes here...
+        SignIn.routeName: (_) => const SignIn(),
+
       },
     );
   }
