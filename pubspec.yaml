@@ -37,6 +37,7 @@ dependencies:
   supabase_flutter: ^2.9.1
   fpdart: ^1.1.1
   flutter_bloc: ^9.1.1
+  quickalert: ^1.1.0
 
 dev_dependencies:
   flutter_test:

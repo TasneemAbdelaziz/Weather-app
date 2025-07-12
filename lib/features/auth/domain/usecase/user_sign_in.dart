@@ -4,22 +4,20 @@ import 'package:weather_app/core/usecase/usecase.dart';
 import 'package:weather_app/features/auth/domain/entities/user.dart';
 import 'package:weather_app/features/auth/domain/repository/auth_repository.dart';
 
-class UserSignUp implements UseCase<MyUser,UserSignUpParams>{
+class UserSignIn implements UseCase<MyUser,UserSignInParams>{
   final AuthRepository authRepository;
-  const UserSignUp(this.authRepository);
+  const UserSignIn(this.authRepository);
   @override
-  Future<Either<Failure, MyUser>> call(UserSignUpParams params) async{
-   return await authRepository.signUpWithEmailAndPassword(name: params.name, email: params.email, password: params.password);
+  Future<Either<Failure, MyUser>> call(UserSignInParams params) async{
+    return await authRepository.signInWithEmailAndPassword(email: params.email, password: params.password);
   }
 
 }
-class UserSignUpParams{
+class UserSignInParams{
   final String email;
-  final String name;
   final String password;
-  UserSignUpParams({
+  UserSignInParams({
     required this.email,
-    required this.name,
     required this.password
-});
+  });
 }

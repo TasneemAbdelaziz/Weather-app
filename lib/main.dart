@@ -5,6 +5,7 @@ import 'package:weather_app/core/secrets/app_secrets.dart';
 import 'package:weather_app/core/theme/theme.dart';
 import 'package:weather_app/features/auth/data/datasoures/supabase_datasource.dart';
 import 'package:weather_app/features/auth/data/repositries/auth_repository_impl.dart';
+import 'package:weather_app/features/auth/domain/usecase/user_sign_in.dart';
 import 'package:weather_app/features/auth/domain/usecase/user_sign_up.dart';
 import 'package:weather_app/features/auth/presntation/bloc/auth_bloc.dart';
 import 'package:weather_app/features/auth/presntation/pages/signin_page.dart';
@@ -15,7 +16,7 @@ void main() async{
    final supabse = await  Supabase.initialize(url: AppSecrets.SupabaseUrl, anonKey: AppSecrets.SupabaseAnnokey);
   runApp(
       MultiBlocProvider(providers: [
-        BlocProvider(create: (_)=>AuthBloc(userSignUp: UserSignUp(AuthRepositoryImpl(SupabaseDatasourceImpl(supabse.client)))))
+        BlocProvider(create: (_)=>AuthBloc(userSignIn: UserSignIn(AuthRepositoryImpl(SupabaseDatasourceImpl(supabse.client))),userSignUp: UserSignUp(AuthRepositoryImpl(SupabaseDatasourceImpl(supabse.client)))))
       ], child: const MyApp())
       );
 }
