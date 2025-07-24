@@ -10,20 +10,36 @@ import 'package:weather_app/features/auth/domain/usecase/user_sign_up.dart';
 import 'package:weather_app/features/auth/presntation/bloc/auth_bloc.dart';
 import 'package:weather_app/features/auth/presntation/pages/signin_page.dart';
 import 'package:weather_app/features/auth/presntation/pages/signup_page.dart';
+import 'package:weather_app/features/home/presentation/pages/home_page.dart';
+import 'package:weather_app/init_dependencies.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-   final supabse = await  Supabase.initialize(url: AppSecrets.SupabaseUrl, anonKey: AppSecrets.SupabaseAnnokey);
+  await initDependices();
   runApp(
       MultiBlocProvider(providers: [
-        BlocProvider(create: (_)=>AuthBloc(userSignIn: UserSignIn(AuthRepositoryImpl(SupabaseDatasourceImpl(supabse.client))),userSignUp: UserSignUp(AuthRepositoryImpl(SupabaseDatasourceImpl(supabse.client)))))
+        BlocProvider(
+          create:(_)=> serviceLocator<AuthBloc>(),
+        )
       ], child: const MyApp())
       );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(AuthIsUserLoggedIn());
+    });
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -38,9 +54,9 @@ class MyApp extends StatelessWidget {
       initialRoute: SignUp.routeName,
 
       routes: {
+        HomePage.routeName:(_)=> const HomePage(),
         SignUp.routeName: (_) => const SignUp(),
         SignIn.routeName: (_) => const SignIn(),
-
       },
     );
   }

@@ -7,6 +7,7 @@ import 'package:weather_app/features/auth/presntation/bloc/auth_bloc.dart';
 import 'package:weather_app/features/auth/presntation/pages/signup_page.dart';
 import 'package:weather_app/features/auth/presntation/widgets/auth_button.dart';
 import 'package:weather_app/features/auth/presntation/widgets/auth_field.dart';
+import 'package:weather_app/features/home/presentation/pages/home_page.dart';
 
 class SignIn extends StatefulWidget {
   static const routeName = "SignIn";
@@ -17,7 +18,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -70,14 +71,14 @@ class _SignInState extends State<SignIn> {
                     );
 
                     // Navigate after delay to allow user to see success alert
-                    // Future.delayed(const Duration(seconds: 2), () {
-                    // Navigator.of(context).pushReplacementNamed(SignIn.routeName);
-                    // });
+                    Future.delayed(const Duration(seconds: 2), () {
+                    Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+                    });
                   }
                 },
                 builder: (context, state) {
                   return Form(
-                    key: formKey,
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       // crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,7 +109,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         AuthButton(
                           onPressed: () {
-                            if (formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               context.read<AuthBloc>().add(AuthSignIn(
                                   email: emailController.text.trim(),
                                   password: passwordController.text.trim()));

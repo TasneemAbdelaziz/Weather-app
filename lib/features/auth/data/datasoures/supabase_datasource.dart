@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:weather_app/features/auth/data/models/user_model.dart';
 
 abstract interface class SupabaseDatasource{
+  Session? get currentUserSession;
   Future<UserModel> signUpWithEmailPassword({
     required String name,
     required String email,
@@ -12,6 +13,7 @@ abstract interface class SupabaseDatasource{
     required String email,
     required String password
   });
+  Future<UserModel?> getCurrentUserData();
 }
 
 class  SupabaseDatasourceImpl implements SupabaseDatasource{
@@ -46,6 +48,24 @@ class  SupabaseDatasourceImpl implements SupabaseDatasource{
         throw Exception("user in null");
       }
       return UserModel.fromJson(response.user!.toJson());
+    }
+    catch(e){
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Session? get currentUserSession =>supabaseClient.auth.currentSession ;
+
+  @override
+  Future<UserModel?> getCurrentUserData() async{
+    try{
+      if(currentUserSession!=null){
+      final userData = await supabaseClient.from('profiles').select().eq('id', currentUserSession!.user.id);
+      return UserModel.fromJson(userData.first).copyWith(
+        email: currentUserSession!.user.email,
+      );
+      }
     }
     catch(e){
       throw Exception(e.toString());

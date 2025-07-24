@@ -8,6 +8,7 @@ import 'package:weather_app/features/auth/presntation/bloc/auth_bloc.dart';
 import 'package:weather_app/features/auth/presntation/pages/signin_page.dart';
 import 'package:weather_app/features/auth/presntation/widgets/auth_button.dart';
 import 'package:weather_app/features/auth/presntation/widgets/auth_field.dart';
+import 'package:weather_app/features/home/presentation/pages/home_page.dart';
 
 class SignUp extends StatefulWidget {
   static const routeName = "SignUp";
@@ -18,7 +19,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -65,16 +66,16 @@ class _SignUpState extends State<SignUp> {
                       autoCloseDuration: const Duration(seconds: 2),
                     );
 
-                    // // Navigate after delay to allow user to see success alert
-                    // Future.delayed(const Duration(seconds: 2), () {
-                    //   Navigator.of(context)
-                    //       .pushReplacementNamed(SignIn.routeName);
-                    // });
+                    // Navigate after delay to allow user to see success alert
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.of(context)
+                          .pushReplacementNamed(HomePage.routeName);
+                    });
                   }
                 },
                 builder: (context, state) {
                   return Form(
-                    key: formKey,
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       // crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,20 +114,20 @@ class _SignUpState extends State<SignUp> {
                         AuthButton(
                           buttomText: "Sign Up",
                           onPressed: () {
-                            if (formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               context.read<AuthBloc>().add(AuthSignUp(
                                   email: emailController.text.trim(),
                                   password: passwordController.text.trim(),
                                   name: nameController.text.trim()));
-                              QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.success,
-                                title: 'Sign-Up Successful',
-                                text: 'Welcome, ${nameController.text.trim()}!',
-                                showCancelBtn: false,
-                                showConfirmBtn: false,
-                                autoCloseDuration: Duration(seconds: 2),
-                              );
+                              // QuickAlert.show(
+                              //   context: context,
+                              //   type: QuickAlertType.success,
+                              //   title: 'Sign-Up Successful',
+                              //   text: 'Welcome, ${nameController.text.trim()}!',
+                              //   showCancelBtn: false,
+                              //   showConfirmBtn: false,
+                              //   autoCloseDuration: Duration(seconds: 2),
+                              // );
                               // setState(() {
                               //
                               // });
