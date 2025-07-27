@@ -52,6 +52,28 @@ class WeatherRemoteDataSource{
     return  weatherList;
   }
 
+  Future<int?> getPrediction(List<int> features) async {
+    final url = Uri.parse("http://192.168.1.3:5000/predict");
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'features': features}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['prediction'];
+      } else {
+        print('Error: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return null;
+    }
+  }
+
 
 
 

@@ -27,4 +27,9 @@ class WeatherRepoImpl implements WeatherRepo {
       throw Exception('Failed to get list weather data: $e');
     }
   }
+
+  @override
+  Future<int?> getPrediction(List<int> features) {
+    return remoteDataSource.getPrediction(features);
+  }
 }

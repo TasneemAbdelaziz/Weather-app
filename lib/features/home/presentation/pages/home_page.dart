@@ -1,14 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:weather_app/core/theme/app_pallet.dart';
 import 'package:weather_app/features/home/domain/entities/weather_model.dart';
+import 'package:weather_app/features/home/domain/use_cases/get_predication.dart';
 // import 'package:weather_app/features/home/data/models/weather_model.dart';
 import 'package:weather_app/features/home/presentation/bloc/weather_bloc.dart';
 import 'package:weather_app/features/home/presentation/widgets/app_bar_title.dart';
 import 'package:weather_app/features/home/presentation/widgets/calender.dart';
 import 'package:weather_app/features/home/presentation/widgets/condation.dart';
+import 'package:weather_app/features/home/presentation/widgets/go_out_button.dart';
+import 'package:weather_app/features/home/presentation/widgets/show_alert_weather.dart';
 import 'package:weather_app/features/home/presentation/widgets/weather_chars.dart';
 import 'package:weather_app/features/home/presentation/widgets/weather_gridView.dart';
+import 'package:http/http.dart' as http;
+import 'package:weather_app/init_dependencies.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = "HomePage";
@@ -30,19 +39,28 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100), child: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        actions: [
-          Icon(Icons.menu, color: Colors.white, size: 30,)
-        ],
-        backgroundColor: Colors.transparent,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: AppBarTitle(),
-        ),
-      )),
+            appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(100),
+          child: Builder(
+            builder: (context) {
+              return AppBar(
+                      elevation: 0,
+                      automaticallyImplyLeading: false,
+                      actions: [
+              IconButton(onPressed: (){
+                Scaffold.of(context).openEndDrawer();
+              },
+                icon: const Icon(Icons.menu, color: Colors.white, size: 30),
+              )
+                      ],
+                      backgroundColor: Colors.transparent,
+                      title: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: AppBarTitle(),
+                      ),
+                    );
+            }
+          )),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,8 +87,6 @@ class _HomePageState extends State<HomePage> {
           "${selectedDate.year.toString().padLeft(4, '0')}-"
           "${selectedDate.month.toString().padLeft(2, '0')}-"
           "${selectedDate.day.toString().padLeft(2, '0')}";
-
-      // نحاول أولاً إيجاد التاريخ داخل الـ history
       ForecastDay? selectedForecast;
       for (final weather in historyList) {
         for (final forecast in weather.forecast) {
@@ -117,22 +133,38 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: WeatherGridview(humidity:selectedForecast.avghumidity.toDouble() ,maxTemp:selectedForecast.maxTemp.toDouble() ,minTemp:selectedForecast.minTemp.toDouble() ,windSpeed:selectedForecast.maxwind_kph.toDouble() ,)
             ),
+            Center(child: GoOutButton(onPressed: ()async {
+              List<int> features = [
+                selectedForecast!.maxTemp > 40 ? 1 : 0,
+                selectedForecast.minTemp < 15 ? 1 : 0,
+                selectedForecast.avghumidity > 70 ? 1 : 0,
+                selectedForecast.maxwind_kph > 20 ? 1 : 0,
+                selectedForecast.condition.contains("rain") ? 1 : 0,
+              ];
+              final result = await serviceLocator<GetPredictionUseCase>()(features);
+              if (result != null) {
+                print(result);
+                showWeatherAlert(context, result);
+              }
+            },))
           ],
         ),
       );
     }
     else if (state is WeatherError) {
-
       return Center(child: Text(state.message));
     } else {
       return const Center(child: Text("Please wait..."));
     }
   },
 ),
-          )
+          ),
+
         ],
       ),
 
     );
   }
+
+
 }
