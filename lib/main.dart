@@ -10,6 +10,7 @@ import 'package:weather_app/features/auth/domain/usecase/user_sign_up.dart';
 import 'package:weather_app/features/auth/presntation/bloc/auth_bloc.dart';
 import 'package:weather_app/features/auth/presntation/pages/signin_page.dart';
 import 'package:weather_app/features/auth/presntation/pages/signup_page.dart';
+import 'package:weather_app/features/home/presentation/bloc/weather_bloc.dart';
 import 'package:weather_app/features/home/presentation/pages/home_page.dart';
 import 'package:weather_app/init_dependencies.dart';
 
@@ -20,6 +21,9 @@ void main() async{
       MultiBlocProvider(providers: [
         BlocProvider(
           create:(_)=> serviceLocator<AuthBloc>(),
+        ),
+        BlocProvider(
+          create:(_)=> serviceLocator<WeatherBloc>(),
         )
       ], child: const MyApp())
       );

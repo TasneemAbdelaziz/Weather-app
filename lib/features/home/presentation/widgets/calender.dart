@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:weather_app/core/theme/app_pallet.dart';
 
 class Calender extends StatelessWidget {
-  const Calender({super.key});
+  Function(DateTime) onSelectedDate;
+   Calender({super.key,required this.onSelectedDate});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class Calender extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child:  DatePicker(
+          daysCount: 10,
         DateTime.now().subtract(const Duration(days: 3)),
         initialSelectedDate: DateTime.now(),
         selectionColor: Colors.white,
@@ -36,10 +38,9 @@ class Calender extends StatelessWidget {
         ),
         height: 90,
         width: 60,
-        onDateChange: (date) {
-          print("Selected: $date");
-        },
+        onDateChange: onSelectedDate
       ),
+
     );
   }
 }
